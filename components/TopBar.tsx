@@ -35,12 +35,14 @@ export default function TopBar({ activeTab, onTabChange }: TopBarProps) {
     setHapticsOn(haptics.isHapticsEnabled());
     setSoundOn(haptics.isSoundEnabled());
 
-    const unsub = screenManager.subscribe((state) => {
+    const unsubScreen = screenManager.subscribe((state) => {
       setAlwaysOn(state.alwaysOn);
       setIsFullscreen(state.fullscreen);
     });
 
-    return () => unsub();
+    return () => {
+      unsubScreen();
+    };
   }, []);
 
   const toggleAlwaysOn = () => {
@@ -123,7 +125,7 @@ export default function TopBar({ activeTab, onTabChange }: TopBarProps) {
                       : item.id === 'notation'
                       ? 'bg-sky-600 text-white shadow-md shadow-sky-600/30 ring-1 ring-sky-400'
                       : 'bg-rose-600 text-white shadow-md shadow-rose-600/30 ring-1 ring-rose-400'
-                    : 'bg-slate-900/60 text-slate-400 hover:text-slate-200 hover:bg-slate-800/80 border border-slate-800/60'
+                    : 'bg-slate-900 text-slate-200 hover:text-white hover:bg-slate-800 border border-slate-700/80'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -138,10 +140,10 @@ export default function TopBar({ activeTab, onTabChange }: TopBarProps) {
           <button
             onClick={toggleAlwaysOn}
             title={alwaysOn ? "Screen Keep-Awake: Active (Screen will not sleep)" : "Enable Screen Keep-Awake"}
-            className={`min-h-[36px] px-2.5 py-1.5 rounded-lg text-xs font-medium border flex items-center gap-1.5 transition-colors whitespace-nowrap ${
+            className={`min-h-[36px] px-2.5 py-1.5 rounded-lg text-xs font-semibold border flex items-center gap-1.5 transition-colors whitespace-nowrap ${
               alwaysOn
-                ? 'bg-amber-950/60 text-amber-300 border-amber-800/80 shadow-sm'
-                : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-white hover:bg-slate-800'
+                ? 'bg-amber-950/80 text-amber-300 border-amber-700 shadow-sm'
+                : 'bg-slate-900 text-slate-200 border-slate-700 hover:text-white hover:bg-slate-800'
             }`}
           >
             {alwaysOn ? <Sun className="w-3.5 h-3.5 text-amber-400 animate-pulse" /> : <SunMedium className="w-3.5 h-3.5" />}
@@ -153,8 +155,8 @@ export default function TopBar({ activeTab, onTabChange }: TopBarProps) {
             title={hapticsOn ? "Tactile Vibration: Enabled" : "Vibration Disabled"}
             className={`min-h-[36px] min-w-[36px] p-2 rounded-lg border transition-colors flex items-center justify-center ${
               hapticsOn
-                ? 'bg-emerald-950/60 text-emerald-300 border-emerald-800/80'
-                : 'bg-slate-900 text-slate-500 border-slate-800 hover:text-slate-300'
+                ? 'bg-emerald-950/80 text-emerald-300 border-emerald-700'
+                : 'bg-slate-900 text-slate-400 border-slate-700 hover:text-white'
             }`}
           >
             {hapticsOn ? <Vibrate className="w-4 h-4 text-emerald-400" /> : <VibrateOff className="w-4 h-4" />}
@@ -165,8 +167,8 @@ export default function TopBar({ activeTab, onTabChange }: TopBarProps) {
             title={soundOn ? "Tactile Snaps Sound: Active" : "Sound Muted"}
             className={`min-h-[36px] min-w-[36px] p-2 rounded-lg border transition-colors flex items-center justify-center ${
               soundOn
-                ? 'bg-blue-950/60 text-blue-300 border-blue-800/80'
-                : 'bg-slate-900 text-slate-500 border-slate-800 hover:text-slate-300'
+                ? 'bg-blue-950/80 text-blue-300 border-blue-700'
+                : 'bg-slate-900 text-slate-400 border-slate-700 hover:text-white'
             }`}
           >
             {soundOn ? <Volume2 className="w-4 h-4 text-blue-400" /> : <VolumeX className="w-4 h-4" />}
@@ -175,7 +177,7 @@ export default function TopBar({ activeTab, onTabChange }: TopBarProps) {
           <button
             onClick={toggleFullscreenMode}
             title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen Mode"}
-            className="min-h-[36px] min-w-[36px] p-2 rounded-lg bg-slate-900 text-slate-300 border border-slate-800 hover:text-white hover:bg-slate-800 transition-colors flex items-center justify-center"
+            className="min-h-[36px] min-w-[36px] p-2 rounded-lg bg-slate-900 text-slate-200 border border-slate-700 hover:text-white hover:bg-slate-800 transition-colors flex items-center justify-center"
           >
             {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
           </button>

@@ -121,7 +121,7 @@ export default function HomePage() {
       <main className="flex-1 w-full max-w-[1520px] mx-auto px-3 sm:px-6 py-4 flex flex-col gap-5">
         {/* Stage Status & Category Filter Header */}
         {(activeTab === '3x3' || activeTab === '4x4' || activeTab === '5x5') && (
-          <div className="flex flex-col gap-3 border-b border-slate-800/80 pb-4">
+          <div className="flex flex-col gap-3 border-b border-slate-800 pb-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-2.5">
                 <div
@@ -140,25 +140,25 @@ export default function HomePage() {
                     ? "4x4 Rubik's Revenge"
                     : "5x5 Professor's Cube"}
                 </h1>
-                <span className="text-xs font-mono px-2.5 py-0.5 rounded-full bg-slate-900 border border-slate-800 text-slate-300">
+                <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-slate-900 border border-slate-700 text-slate-200">
                   {displayedAlgorithms.length} Algorithms
                 </span>
               </div>
 
               {/* Instant Search Bar */}
               <div className="relative w-full sm:w-72">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search algorithm or trigger..."
-                  className="w-full bg-slate-900/90 border border-slate-800 focus:border-blue-500 rounded-xl pl-9 pr-8 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all"
+                  className="w-full bg-slate-900 border border-slate-700 focus:border-blue-400 rounded-xl pl-9 pr-8 py-1.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all font-medium"
                 />
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery('')}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white p-0.5"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-300 hover:text-white p-0.5"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -166,27 +166,30 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Category Filter Pills */}
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-              <span className="text-xs uppercase font-mono tracking-wider text-slate-500 mr-1 shrink-0">
+            {/* High Contrast Category Filter Pills */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+              <span className="text-xs uppercase font-bold tracking-wider text-slate-200 shrink-0 mr-1">
                 Filter:
               </span>
-              {categories.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => {
-                    setSelectedCategory(cat);
-                    haptics.trigger('tick');
-                  }}
-                  className={`min-h-[34px] px-3 py-1 text-xs font-medium rounded-lg transition-colors whitespace-nowrap ${
-                    selectedCategory === cat
-                      ? 'bg-slate-800 text-white border border-slate-700 shadow-sm'
-                      : 'text-slate-400 hover:text-white hover:bg-slate-900 border border-transparent'
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
+              {categories.map((cat) => {
+                const isCatSelected = selectedCategory === cat;
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => {
+                      setSelectedCategory(cat);
+                      haptics.trigger('tick');
+                    }}
+                    className={`min-h-[34px] px-3.5 py-1 text-xs font-bold rounded-lg transition-all whitespace-nowrap shrink-0 ${
+                      isCatSelected
+                        ? 'bg-blue-600 text-white border border-blue-400 shadow-md shadow-blue-600/30 ring-1 ring-blue-400'
+                        : 'bg-slate-900 text-slate-200 border border-slate-700/90 hover:bg-slate-800 hover:text-white hover:border-slate-500'
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                );
+              })}
             </div>
           </div>
         )}
@@ -203,27 +206,27 @@ export default function HomePage() {
                   <button
                     key={alg.id}
                     onClick={() => handleSelectAlgorithm(alg)}
-                    className={`min-h-[105px] p-3.5 rounded-xl border text-left transition-all flex flex-col justify-between gap-3 ${
+                    className={`min-h-[108px] p-3.5 rounded-xl border text-left transition-all flex flex-col justify-between gap-3 ${
                       isSelected
                         ? selectedCubeType === '5x5'
-                          ? 'bg-purple-950/40 border-purple-500/80 shadow-lg shadow-purple-500/15 ring-2 ring-purple-500/40'
+                          ? 'bg-purple-950/60 border-purple-400 shadow-lg shadow-purple-500/20 ring-2 ring-purple-400'
                           : selectedCubeType === '4x4'
-                          ? 'bg-amber-950/40 border-amber-500/80 shadow-lg shadow-amber-500/15 ring-2 ring-amber-500/40'
-                          : 'bg-blue-950/40 border-blue-500/80 shadow-lg shadow-blue-500/15 ring-2 ring-blue-500/40'
-                        : 'bg-slate-900/60 hover:bg-slate-800/80 border-slate-800/90 text-slate-300 hover:text-white'
+                          ? 'bg-amber-950/60 border-amber-400 shadow-lg shadow-amber-500/20 ring-2 ring-amber-400'
+                          : 'bg-blue-950/60 border-blue-400 shadow-lg shadow-blue-500/20 ring-2 ring-blue-400'
+                        : 'bg-slate-900/90 hover:bg-slate-800/90 border-slate-700/80 hover:border-slate-500 text-slate-200 hover:text-white'
                     }`}
                   >
                     <div>
                       <div className="flex items-center justify-between text-xs mb-1.5 gap-2">
-                        <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-slate-950 border border-slate-800 text-blue-400 font-mono">
+                        <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-950 border border-slate-700 text-blue-300 font-mono">
                           {alg.category}
                         </span>
                         {isMastered ? (
-                          <span className="text-emerald-400 flex items-center gap-1 font-medium text-[11px] shrink-0">
+                          <span className="text-emerald-400 flex items-center gap-1 font-bold text-[11px] shrink-0">
                             <CheckCircle2 className="w-3.5 h-3.5" /> Mastered
                           </span>
                         ) : (
-                          <span className="text-slate-500 text-[11px] font-mono shrink-0">
+                          <span className="text-slate-300 text-[11px] font-mono font-bold shrink-0 bg-slate-950 px-1.5 py-0.5 rounded border border-slate-800">
                             {alg.moves.length} moves
                           </span>
                         )}
@@ -232,15 +235,15 @@ export default function HomePage() {
                         {alg.name}
                       </h4>
                       {alg.mnemonic && (
-                        <span className="text-[11px] bg-gradient-to-r from-amber-300 via-orange-300 to-yellow-200 bg-clip-text text-transparent font-medium block truncate mt-0.5">
+                        <span className="text-[11px] bg-gradient-to-r from-amber-300 via-orange-300 to-yellow-200 bg-clip-text text-transparent font-semibold block truncate mt-0.5">
                           ✨ {alg.mnemonic}
                         </span>
                       )}
                     </div>
 
-                    <div className="flex items-center justify-between text-xs pt-2 border-t border-slate-800/60 gap-2">
+                    <div className="flex items-center justify-between text-xs pt-2 border-t border-slate-800 gap-2">
                       <ColorNotation notation={alg.shortName} size="sm" />
-                      <ChevronRight className={`w-4 h-4 shrink-0 ${isSelected ? 'text-blue-400' : 'text-slate-600'}`} />
+                      <ChevronRight className={`w-4 h-4 shrink-0 ${isSelected ? 'text-blue-400' : 'text-slate-400'}`} />
                     </div>
                   </button>
                 );
@@ -317,8 +320,8 @@ export default function HomePage() {
       <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#070b12]/95 backdrop-blur-md border-t border-slate-800 px-2 py-1.5 flex items-center justify-around shadow-2xl">
         <button
           onClick={() => handleTabChange('3x3')}
-          className={`flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-lg text-[10px] font-medium transition-colors ${
-            activeTab === '3x3' ? 'text-blue-400 font-bold' : 'text-slate-400'
+          className={`flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-lg text-[10px] font-bold transition-colors ${
+            activeTab === '3x3' ? 'text-blue-400 font-bold' : 'text-slate-300'
           }`}
         >
           <Box className="w-4 h-4" />
@@ -327,8 +330,8 @@ export default function HomePage() {
 
         <button
           onClick={() => handleTabChange('4x4')}
-          className={`flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-lg text-[10px] font-medium transition-colors ${
-            activeTab === '4x4' ? 'text-amber-400 font-bold' : 'text-slate-400'
+          className={`flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-lg text-[10px] font-bold transition-colors ${
+            activeTab === '4x4' ? 'text-amber-400 font-bold' : 'text-slate-300'
           }`}
         >
           <Layers className="w-4 h-4" />
@@ -337,8 +340,8 @@ export default function HomePage() {
 
         <button
           onClick={() => handleTabChange('5x5')}
-          className={`flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-lg text-[10px] font-medium transition-colors ${
-            activeTab === '5x5' ? 'text-purple-400 font-bold' : 'text-slate-400'
+          className={`flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-lg text-[10px] font-bold transition-colors ${
+            activeTab === '5x5' ? 'text-purple-400 font-bold' : 'text-slate-300'
           }`}
         >
           <Box className="w-4 h-4" />
@@ -347,8 +350,8 @@ export default function HomePage() {
 
         <button
           onClick={() => handleTabChange('drill')}
-          className={`flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-lg text-[10px] font-medium transition-colors ${
-            activeTab === 'drill' ? 'text-emerald-400 font-bold' : 'text-slate-400'
+          className={`flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-lg text-[10px] font-bold transition-colors ${
+            activeTab === 'drill' ? 'text-emerald-400 font-bold' : 'text-slate-300'
           }`}
         >
           <Timer className="w-4 h-4" />
@@ -357,8 +360,8 @@ export default function HomePage() {
 
         <button
           onClick={() => handleTabChange('notation')}
-          className={`flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-lg text-[10px] font-medium transition-colors ${
-            activeTab === 'notation' ? 'text-sky-400 font-bold' : 'text-slate-400'
+          className={`flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-lg text-[10px] font-bold transition-colors ${
+            activeTab === 'notation' ? 'text-sky-400 font-bold' : 'text-slate-300'
           }`}
         >
           <BookOpen className="w-4 h-4" />
@@ -367,28 +370,14 @@ export default function HomePage() {
 
         <button
           onClick={() => handleTabChange('stats')}
-          className={`flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-lg text-[10px] font-medium transition-colors ${
-            activeTab === 'stats' ? 'text-rose-400 font-bold' : 'text-slate-400'
+          className={`flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-lg text-[10px] font-bold transition-colors ${
+            activeTab === 'stats' ? 'text-rose-400 font-bold' : 'text-slate-300'
           }`}
         >
           <Award className="w-4 h-4" />
           <span>Stats</span>
         </button>
       </nav>
-
-      {/* Footer */}
-      <footer className="border-t border-slate-800/80 bg-[#06090e] px-4 sm:px-6 py-4 text-xs text-slate-500 flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <span>Algocube · Professional 3x3, 4x4 &amp; 5x5 Speedcubing Algorithm Masterclass</span>
-        </div>
-        <div className="flex items-center gap-4 text-slate-400">
-          <span>Dual Haptics</span>
-          <span aria-hidden="true">·</span>
-          <span>British Voice Narration</span>
-          <span aria-hidden="true">·</span>
-          <span>Always-On Screen Keep-Awake</span>
-        </div>
-      </footer>
     </div>
   );
 }

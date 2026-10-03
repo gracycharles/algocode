@@ -90,18 +90,15 @@ export function ColorNotation({
   const moves = notation.trim().split(/\s+/);
 
   const sizeClasses = {
-    sm: 'px-1.5 py-0.5 text-[11px] gap-1',
-    md: 'px-2 py-1 text-xs gap-1.5',
-    lg: 'px-3 py-1.5 text-sm gap-2',
+    sm: 'px-2 py-0.5 text-xs gap-1',
+    md: 'px-2.5 py-1 text-xs gap-1.5',
+    lg: 'px-3.5 py-1.5 text-sm gap-2',
   }[size];
 
   return (
     <div className={`flex flex-wrap items-center gap-1.5 font-mono ${className}`}>
       {moves.map((move, idx) => {
         const colors = getMoveColorClasses(move);
-        const isPrime = move.includes("'");
-        const isDouble = move.includes('2');
-        const isWide = move.toLowerCase().includes('w') || move.startsWith('2') || move.startsWith('3');
         const isActive = activeMoveIndex === idx;
 
         return (
@@ -114,21 +111,6 @@ export function ColorNotation({
             }`}
           >
             <span>{move}</span>
-            {isWide && (
-              <span className="text-[9px] px-1 bg-white/10 rounded font-sans uppercase font-normal tracking-tight text-white/80">
-                Wide
-              </span>
-            )}
-            {isPrime && (
-              <span className="text-[10px] text-rose-400 font-sans font-bold" title="Counter-clockwise">
-                ′
-              </span>
-            )}
-            {isDouble && (
-              <span className="text-[10px] text-amber-300 font-sans font-bold" title="180° Turn">
-                2
-              </span>
-            )}
           </span>
         );
       })}
