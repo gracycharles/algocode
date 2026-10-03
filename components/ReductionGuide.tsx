@@ -15,7 +15,26 @@ import {
   Lightbulb,
   X,
   Play,
+  ArrowRight,
 } from 'lucide-react';
+
+interface SubStepInfo {
+  label: string;
+  code: string;
+  desc: string;
+}
+
+interface StepInfo {
+  stepNumber: number;
+  title: string;
+  subtitle: string;
+  description: string;
+  subSteps?: SubStepInfo[];
+  tip: string;
+  recommendedAlgId: string;
+  color: string;
+  badgeColor: string;
+}
 
 interface ReductionGuideProps {
   cubeType: '4x4' | '5x5';
@@ -28,15 +47,13 @@ export default function ReductionGuide({
   onSelectAlgorithm,
   onClose,
 }: ReductionGuideProps) {
-  const [activeStep, setActiveStep] = useState<number>(1);
-
-  const steps5x5 = [
+  const steps5x5: StepInfo[] = [
     {
       stepNumber: 1,
       title: 'Phase 1: Build the 6 Composite Centers (3x3 Blocks)',
       subtitle: 'Reduce center pieces first without disturbing fixed orientations',
       description:
-        'A scrambled 5x5 has 54 center pieces (9 per face). You cannot solve outer edges first! Group matching colors to create 3x3 center blocks on all 6 sides in standard color order (White top, Yellow bottom, Green front, Red right).',
+        'A scrambled 5x5 has 54 center pieces (9 per face). Group matching colors to create 3x3 center blocks on all 6 sides in standard color order (White top, Yellow bottom, Green front, Red right).',
       tip: 'Use the Inner Slice Commutator to swap misplaced center dots without scrambling previously completed centers.',
       recommendedAlgId: '5x5-center-commutator',
       color: 'from-blue-600 to-indigo-700',
@@ -45,10 +62,27 @@ export default function ReductionGuide({
     {
       stepNumber: 2,
       title: 'Phase 2: Pair Composite Edges (12x 1x3 Edge Trios)',
-      subtitle: 'Combine 1 center edge + 2 wing edges into solid 1x3 edge blocks',
+      subtitle: 'Combine 1 Center Edge + 2 Wing Edges into solid 1x3 composite edges',
       description:
-        'After centers are completed, pair matching edge pieces around the cube into 12 composite edge trios using wide slice moves (Freeslicing).',
-      tip: 'Slice top layers with Uw\', apply the Edge Flip algorithm (R U R\' F R\' F\' R) to invert a wing, then slice back with Uw to restore all centers.',
+        'A 5x5 edge consists of 3 pieces: 1 Center Edge + 2 Outer Wings (Upper Wing & Lower Wing). Freeslicing pairs them in two stages:',
+      subSteps: [
+        {
+          label: 'A. Upper Wing Pairing',
+          code: 'Uw\' (R U R\' F R\' F\' R) Uw',
+          desc: 'Turn top two layers (Uw\') to connect the top wing to the center edge. If the wing orientation is upside down, execute Edge Flip (R U R\' F R\' F\' R) before slicing back with Uw.',
+        },
+        {
+          label: 'B. Lower Wing Pairing',
+          code: '3Uw\' (R U R\' F R\' F\' R) 3Uw',
+          desc: 'Turn top three layers (3Uw\') to connect the bottom wing to the center edge, flip if inverted, then slice back with 3Uw to restore centers.',
+        },
+        {
+          label: 'C. Last 2 Edges (L2E) Wing Swap',
+          code: '2R2 U2 2R2 Uw2 2R2 2Uw2',
+          desc: 'When 10 edges are solved and freeslicing is unavailable, place the final 2 edges facing each other on Front-Left & Front-Right and execute this algorithm to swap misaligned wings directly.',
+        },
+      ],
+      tip: 'Remember: If the wing colors are inverted before slicing, execute Edge Flip (R U R\' F R\' F\' R) first so colors match when joined!',
       recommendedAlgId: '5x5-freeslice-pairing',
       color: 'from-amber-600 to-orange-700',
       badgeColor: 'bg-amber-950 text-amber-300 border-amber-700',
@@ -77,13 +111,13 @@ export default function ReductionGuide({
     },
   ];
 
-  const steps4x4 = [
+  const steps4x4: StepInfo[] = [
     {
       stepNumber: 1,
       title: 'Phase 1: Group Center Blocks (2x2 Centers)',
       subtitle: 'Build 6 centers in standard color scheme',
       description:
-        'Unlike 3x3 or 5x5, 4x4 has no stationary center caps. You must build 2x2 center blocks in standard order (White opposite Yellow, Green opposite Blue, Red opposite Orange).',
+        'Build 2x2 center blocks in standard order (White opposite Yellow, Green opposite Blue, Red opposite Orange).',
       tip: 'Build White first, then Yellow opposite, then side centers in order.',
       recommendedAlgId: '4x4-center-half',
       color: 'from-amber-600 to-orange-700',
@@ -94,7 +128,7 @@ export default function ReductionGuide({
       title: 'Phase 2: Pair Composite Edges (12x Edge Pairs)',
       subtitle: 'Pair 2 matching edge halves into 12 composite edge pairs',
       description:
-        'Match corresponding edge pieces using wide slice turns (Uw) and the Edge Flipping algorithm.',
+        'Match corresponding edge pieces using wide slice turns (Uw) and the Edge Flipping algorithm (R U R\' F R\' F\' R).',
       tip: 'Use Uw\' (R U R\' F R\' F\' R) Uw to pair wings without breaking centers.',
       recommendedAlgId: '4x4-edge-pairing',
       color: 'from-blue-600 to-indigo-700',
@@ -115,8 +149,8 @@ export default function ReductionGuide({
       title: 'Phase 4: OLL & PLL Parity Fixes',
       subtitle: 'Resolve single flipped edge or swapped corners/edges',
       description:
-        'Apply 4x4 OLL Parity (r U2 x r U2 r U2 r\' U2 l U2 r\' U2 r U2 r\' U2 r\') if top cross has an odd edge count.',
-      tip: 'Apply 4x4 PLL Parity (2R2 U2 2R2 Uw2 2R2 2Uw2) if 2 opposite edges or corners need swapping at the end.',
+        'Apply 4x4 OLL Parity if top cross has an odd edge count. Apply 4x4 PLL Parity if 2 opposite edges or corners need swapping.',
+      tip: 'Use 4x4 OLL Parity or PLL Parity algorithms to complete the puzzle.',
       recommendedAlgId: '4x4-oll-parity',
       color: 'from-purple-600 to-pink-700',
       badgeColor: 'bg-purple-950 text-purple-300 border-purple-700',
@@ -170,7 +204,7 @@ export default function ReductionGuide({
             Why a single algorithm cannot solve a scrambled {cubeType} all at once:
           </strong>
           <p className="text-slate-200">
-            Big cubes like the {cubeType} are solved using the <strong>Reduction Method</strong> in 4 distinct phases. An individual algorithm (like a Center Commutator or Parity Fix) is a tool used during a specific phase to solve specific pieces—not a single sequence that solves a full scramble from scratch!
+            Big cubes like the {cubeType} are solved using the <strong>Reduction Method</strong> in 4 distinct phases. An individual algorithm is a specific tool for a specific phase—not a single sequence that solves a full scramble from scratch!
           </p>
         </div>
       </div>
@@ -202,6 +236,21 @@ export default function ReductionGuide({
                 <p className="text-xs text-slate-300 leading-relaxed">
                   {s.description}
                 </p>
+
+                {/* Optional Sub-steps for Phase 2 */}
+                {s.subSteps && (
+                  <div className="space-y-2 pt-2">
+                    {s.subSteps.map((sub, idx) => (
+                      <div key={idx} className="p-2.5 rounded-lg bg-slate-900 border border-slate-800 text-xs space-y-1">
+                        <div className="flex items-center justify-between font-bold text-blue-300">
+                          <span>{sub.label}</span>
+                        </div>
+                        <ColorNotation notation={sub.code} size="sm" />
+                        <p className="text-[11px] text-slate-300 leading-snug pt-0.5">{sub.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <div className="space-y-2.5 pt-3 border-t border-slate-800">
