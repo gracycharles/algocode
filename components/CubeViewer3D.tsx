@@ -805,10 +805,7 @@ export default function CubeViewer3D({
       <div className="absolute top-3 left-3 right-3 sm:top-4 sm:left-4 sm:right-4 flex items-center justify-between pointer-events-none">
         <div className="flex items-center gap-2 pointer-events-auto">
           <span className="text-xs font-semibold px-2.5 py-1 bg-slate-900/90 text-white border border-slate-700/80 rounded-lg backdrop-blur-md shadow-md">
-            {cubeType} Master Stage
-          </span>
-          <span className="text-xs text-slate-400 hidden sm:inline-block bg-slate-900/70 px-2.5 py-1 rounded-lg border border-slate-800/80 backdrop-blur-sm">
-            Drag to inspect 360°
+            {cubeType} Interactive Stage
           </span>
         </div>
 
@@ -853,7 +850,7 @@ export default function CubeViewer3D({
       {algorithm && algorithm.moves.length > 0 && (
         <div className="px-3 sm:px-5 py-3 bg-slate-950/90 border-t border-slate-800/80 backdrop-blur-md">
           {/* Scrollable Move Sequence Strip */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-2 scrollbar-none">
+          <div className="flex items-center gap-1.5 overflow-x-auto pt-1.5 pb-2 px-1 scrollbar-none">
             {algorithm.moves.map((move, idx) => {
               const isCurrent = idx === currentStepIndex;
               const isPast = idx < currentStepIndex;
@@ -861,12 +858,12 @@ export default function CubeViewer3D({
                 <button
                   key={`${move}-${idx}`}
                   onClick={() => handleScrubTo(idx)}
-                  className={`min-h-[36px] min-w-[42px] px-3 py-1.5 text-xs font-mono font-bold rounded-lg shrink-0 transition-all flex items-center justify-center ${
+                  className={`min-h-[38px] min-w-[44px] px-3 py-1.5 text-xs font-mono font-bold rounded-lg shrink-0 transition-all flex items-center justify-center border ${
                     isCurrent
-                      ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30 scale-105 ring-2 ring-blue-400'
+                      ? 'bg-blue-600 text-white border-blue-400 shadow-lg shadow-blue-500/30 scale-[1.03] ring-2 ring-blue-400/60'
                       : isPast
-                      ? 'bg-slate-800/90 text-slate-400 hover:text-slate-200'
-                      : 'bg-slate-900 text-slate-500 hover:text-slate-300'
+                      ? 'bg-slate-800 text-slate-300 border-slate-700 hover:border-slate-500 hover:text-white'
+                      : 'bg-slate-900/90 text-slate-400 border-slate-700/80 hover:border-slate-500 hover:text-white'
                   }`}
                 >
                   {move}
@@ -890,7 +887,7 @@ export default function CubeViewer3D({
 
             <div className="flex items-center gap-1.5 sm:gap-2">
               {/* Speed Switcher */}
-              <div className="flex items-center bg-slate-900 border border-slate-800 rounded-lg p-0.5 text-xs">
+              <div className="flex items-center bg-slate-900/90 border border-slate-700/80 rounded-lg p-0.5 text-xs">
                 {[0.75, 1, 1.5].map((spd) => (
                   <button
                     key={spd}
@@ -900,8 +897,8 @@ export default function CubeViewer3D({
                     }}
                     className={`px-2 py-1 rounded-md transition-colors font-mono ${
                       playSpeed === spd
-                        ? 'bg-slate-800 text-white font-semibold'
-                        : 'text-slate-500 hover:text-slate-300'
+                        ? 'bg-slate-800 text-white font-semibold border border-slate-600/60'
+                        : 'text-slate-400 hover:text-slate-200'
                     }`}
                   >
                     {spd}x
@@ -912,7 +909,7 @@ export default function CubeViewer3D({
               <button
                 onClick={stepBackward}
                 disabled={currentStepIndex < 0 || isRotating}
-                className="min-h-[36px] min-w-[36px] p-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white disabled:opacity-40 disabled:pointer-events-none transition-colors flex items-center justify-center border border-slate-800"
+                className="min-h-[36px] min-w-[36px] p-2 rounded-lg text-slate-300 bg-slate-900/80 hover:bg-slate-800 hover:text-white disabled:opacity-40 disabled:pointer-events-none transition-colors flex items-center justify-center border border-slate-700/80"
                 title="Step Backward"
               >
                 <SkipBack className="w-4 h-4" />
@@ -920,7 +917,7 @@ export default function CubeViewer3D({
 
               <button
                 onClick={handleTogglePlay}
-                className="min-h-[36px] px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs flex items-center gap-1.5 shadow-md shadow-blue-600/30 transition-colors"
+                className="min-h-[36px] px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs flex items-center gap-1.5 shadow-md shadow-blue-600/30 border border-blue-400/80 transition-colors"
               >
                 {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
                 <span>{isPlaying ? 'Pause' : 'Play'}</span>
@@ -929,7 +926,7 @@ export default function CubeViewer3D({
               <button
                 onClick={stepForward}
                 disabled={currentStepIndex >= algorithm.moves.length - 1 || isRotating}
-                className="min-h-[36px] min-w-[36px] p-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white disabled:opacity-40 disabled:pointer-events-none transition-colors flex items-center justify-center border border-slate-800"
+                className="min-h-[36px] min-w-[36px] p-2 rounded-lg text-slate-300 bg-slate-900/80 hover:bg-slate-800 hover:text-white disabled:opacity-40 disabled:pointer-events-none transition-colors flex items-center justify-center border border-slate-700/80"
                 title="Step Forward"
               >
                 <SkipForward className="w-4 h-4" />
@@ -937,7 +934,7 @@ export default function CubeViewer3D({
 
               <button
                 onClick={resetToStart}
-                className="min-h-[36px] min-w-[36px] p-2 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center justify-center border border-slate-800"
+                className="min-h-[36px] min-w-[36px] p-2 rounded-lg text-slate-300 bg-slate-900/80 hover:bg-slate-800 hover:text-white transition-colors flex items-center justify-center border border-slate-700/80"
                 title="Reset to Start"
               >
                 <RotateCcw className="w-4 h-4" />

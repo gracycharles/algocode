@@ -10,7 +10,7 @@ import {
 import { progressStore } from '@/lib/progressStore';
 import { voiceCoach } from '@/lib/voiceCoach';
 import { haptics } from '@/lib/haptics';
-import { screenManager } from '@/lib/screenManager';
+import { ColorNotation } from '@/lib/notationFormatter';
 
 import TopBar from '@/components/TopBar';
 import CubeViewer3D from '@/components/CubeViewer3D';
@@ -21,13 +21,15 @@ import ProgressStats from '@/components/ProgressStats';
 
 import {
   ChevronRight,
-  ShieldCheck,
   CheckCircle2,
   Box,
   Layers,
   Timer,
   BookOpen,
   Award,
+  Search,
+  X,
+  Sparkles,
 } from 'lucide-react';
 
 export default function HomePage() {
@@ -36,6 +38,7 @@ export default function HomePage() {
   const [selectedAlgorithm, setSelectedAlgorithm] = useState<Algorithm>(CUBE_ALGORITHMS[0]);
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(-1);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const [isMounted, setIsMounted] = useState<boolean>(false);
   const [, setProgressTick] = useState<number>(0);
 
@@ -50,6 +53,7 @@ export default function HomePage() {
   const handleTabChange = useCallback((tab: '3x3' | '4x4' | '5x5' | 'drill' | 'notation' | 'stats') => {
     setActiveTab(tab);
     setSelectedCategory('All');
+    setSearchQuery('');
     haptics.trigger('tick');
 
     if (tab === '3x3') {
@@ -80,8 +84,20 @@ export default function HomePage() {
   const categories = ['All', ...Array.from(new Set(cubeAlgorithms.map((a) => a.category)))];
 
   const displayedAlgorithms = cubeAlgorithms.filter((a) => {
-    if (selectedCategory === 'All') return true;
-    return a.category === selectedCategory;
+    if (selectedCategory !== 'All' && a.category !== selectedCategory) {
+      return false;
+    }
+    if (searchQuery.trim().length > 0) {
+      const q = searchQuery.toLowerCase().trim();
+      const matchName = a.name.toLowerCase().includes(q);
+      const matchShort = a.shortName.toLowerCase().includes(q);
+      const matchStage = a.stageName.toLowerCase().includes(q);
+      const matchCategory = a.category.toLowerCase().includes(q);
+      const matchMnemonic = a.mnemonic?.toLowerCase().includes(q) ?? false;
+      const matchMoves = a.moves.join(' ').toLowerCase().includes(q);
+      return matchName || matchShort || matchStage || matchCategory || matchMnemonic || matchMoves;
+    }
+    return true;
   });
 
   const handleSelectAlgorithm = (alg: Algorithm) => {
@@ -103,13 +119,13 @@ export default function HomePage() {
       <TopBar activeTab={activeTab} onTabChange={handleTabChange} />
 
       <main className="flex-1 w-full max-w-[1520px] mx-auto px-3 sm:px-6 py-4 flex flex-col gap-5">
-        {/* Stage Status & Category Header */}
+        {/* Stage Status & Category Filter Header */}
         {(activeTab === '3x3' || activeTab === '4x4' || activeTab === '5x5') && (
           <div className="flex flex-col gap-3 border-b border-slate-800/80 pb-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-2.5">
                 <div
-                  className={`w-3 h-3 rounded-full ${
+                  className={`w-3.5 h-3.5 rounded-full ${
                     selectedCubeType === '5x5'
                       ? 'bg-purple-500 shadow-purple-500/50 shadow-sm'
                       : selectedCubeType === '4x4'
@@ -119,24 +135,34 @@ export default function HomePage() {
                 />
                 <h1 className="text-base sm:text-lg font-bold text-white tracking-tight">
                   {selectedCubeType === '3x3'
-                    ? '3x3 Speedcubing Masterclass (CFOP & Foundations)'
+                    ? '3x3 Speedcubing Masterclass'
                     : selectedCubeType === '4x4'
-                    ? "4x4 Rubik's Revenge (Parity Algorithms & Edge Slices)"
-                    : "5x5 Professor's Cube (Reduction & Last Edges)"}
+                    ? "4x4 Rubik's Revenge"
+                    : "5x5 Professor's Cube"}
                 </h1>
-                <span className="text-xs font-mono px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400">
+                <span className="text-xs font-mono px-2.5 py-0.5 rounded-full bg-slate-900 border border-slate-800 text-slate-300">
                   {displayedAlgorithms.length} Algorithms
                 </span>
               </div>
 
-              <div className="hidden lg:flex items-center gap-3 text-xs text-slate-400">
-                <span className="flex items-center gap-1.5 text-slate-400">
-                  <kbd className="px-1.5 py-0.5 bg-slate-900 border border-slate-800 rounded font-mono text-[11px] text-slate-300">Space</kbd> Play
-                </span>
-                <span className="flex items-center gap-1.5 text-slate-400">
-                  <kbd className="px-1.5 py-0.5 bg-slate-900 border border-slate-800 rounded font-mono text-[11px] text-slate-300">←</kbd>
-                  <kbd className="px-1.5 py-0.5 bg-slate-900 border border-slate-800 rounded font-mono text-[11px] text-slate-300">→</kbd> Step
-                </span>
+              {/* Instant Search Bar */}
+              <div className="relative w-full sm:w-72">
+                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search algorithm or trigger..."
+                  className="w-full bg-slate-900/90 border border-slate-800 focus:border-blue-500 rounded-xl pl-9 pr-8 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white p-0.5"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                )}
               </div>
             </div>
 
@@ -177,7 +203,7 @@ export default function HomePage() {
                   <button
                     key={alg.id}
                     onClick={() => handleSelectAlgorithm(alg)}
-                    className={`min-h-[92px] p-3.5 rounded-xl border text-left transition-all flex flex-col justify-between gap-2.5 ${
+                    className={`min-h-[105px] p-3.5 rounded-xl border text-left transition-all flex flex-col justify-between gap-3 ${
                       isSelected
                         ? selectedCubeType === '5x5'
                           ? 'bg-purple-950/40 border-purple-500/80 shadow-lg shadow-purple-500/15 ring-2 ring-purple-500/40'
@@ -188,30 +214,33 @@ export default function HomePage() {
                     }`}
                   >
                     <div>
-                      <div className="flex items-center justify-between text-xs mb-1">
-                        <span className="text-slate-400 font-mono text-[11px] truncate max-w-[170px]">
-                          {alg.stageName}
+                      <div className="flex items-center justify-between text-xs mb-1.5 gap-2">
+                        <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-slate-950 border border-slate-800 text-blue-400 font-mono">
+                          {alg.category}
                         </span>
                         {isMastered ? (
-                          <span className="text-emerald-400 flex items-center gap-1 font-medium text-[11px]">
-                            <CheckCircle2 className="w-3 h-3" /> Mastered
+                          <span className="text-emerald-400 flex items-center gap-1 font-medium text-[11px] shrink-0">
+                            <CheckCircle2 className="w-3.5 h-3.5" /> Mastered
                           </span>
                         ) : (
-                          <span className="text-slate-500 text-[11px] font-mono">
+                          <span className="text-slate-500 text-[11px] font-mono shrink-0">
                             {alg.moves.length} moves
                           </span>
                         )}
                       </div>
-                      <h4 className="text-sm font-semibold text-white leading-tight line-clamp-1">
+                      <h4 className="text-sm font-bold text-white leading-tight line-clamp-1">
                         {alg.name}
                       </h4>
+                      {alg.mnemonic && (
+                        <span className="text-[11px] bg-gradient-to-r from-amber-300 via-orange-300 to-yellow-200 bg-clip-text text-transparent font-medium block truncate mt-0.5">
+                          ✨ {alg.mnemonic}
+                        </span>
+                      )}
                     </div>
 
-                    <div className="flex items-center justify-between text-xs pt-2 border-t border-slate-800/60">
-                      <span className="font-mono text-slate-400 font-semibold truncate max-w-[180px]">
-                        {alg.shortName}
-                      </span>
-                      <ChevronRight className={`w-3.5 h-3.5 shrink-0 ${isSelected ? 'text-blue-400' : 'text-slate-600'}`} />
+                    <div className="flex items-center justify-between text-xs pt-2 border-t border-slate-800/60 gap-2">
+                      <ColorNotation notation={alg.shortName} size="sm" />
+                      <ChevronRight className={`w-4 h-4 shrink-0 ${isSelected ? 'text-blue-400' : 'text-slate-600'}`} />
                     </div>
                   </button>
                 );
@@ -229,16 +258,6 @@ export default function HomePage() {
                     onMoveChange={setCurrentStepIndex}
                     onAlgorithmComplete={handleAlgorithmComplete}
                   />
-                </div>
-
-                <div className="p-3.5 rounded-xl bg-slate-900/50 border border-slate-800/80 text-xs text-slate-400 flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span>WCA Standards: White top, Yellow bottom, Green front, Red right</span>
-                  </div>
-                  <span className="font-mono text-slate-500 text-[11px]">
-                    Drag to rotate view · Controls below
-                  </span>
                 </div>
               </div>
 
