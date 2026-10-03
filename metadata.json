@@ -1,0 +1,6 @@
+{
+  "name": "Algocube: 3x3 & 5x5 Speedcubing Masterclass",
+  "description": "Interactive 3D animated algorithm trainer for 3x3 and 5x5 Rubik's cubes with tactile haptic mechanics, British voice narration, screen keep-awake, and beginner-to-advanced step breakdown.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Algocube: 3x3, 4x4 & 5x5 Speedcubing Masterclass
+  Application manifest and GitHub Pages deployment configuration
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.algocube.app">
+
+    <application
+        android:label="Algocube"
+        android:description="Professional 3x3, 4x4 and 5x5 Rubik's Cube Algorithm Masterclass with British Voice Coach, Tactile Haptics, and Screen Keep-Awake"
+        android:theme="@android:style/Theme.DeviceDefault.NoActionBar.Fullscreen"
+        android:hardwareAccelerated="true"
+        android:allowBackup="true"
+        android:supportsRtl="true">
+
+        <meta-data
+            android:name="deployment.target"
+            android:value="github-pages" />
+
+        <meta-data
+            android:name="deployment.base_href"
+            android:value="./" />
+
+        <meta-data
+            android:name="app.screen_wake_lock"
+            android:value="always-on" />
+
+        <meta-data
+            android:name="app.voice_coach"
+            android:value="en-GB-young-female" />
+
+        <meta-data
+            android:name="app.cubes_supported"
+            android:value="3x3,4x4,5x5" />
+    </application>
+
+    <deployment>
+        <provider>github-pages</provider>
+        <branch>gh-pages</branch>
+        <public_dir>public</public_dir>
+        <build_output>dist</build_output>
+        <cname></cname>
+    </deployment>
+
+</manifest>
