@@ -35,9 +35,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build Next.js export for GitHub Pages
+      - name: Build Next.js static export for GitHub Pages
         run: npm run build
         env:
+          GITHUB_PAGES: 'true'
           NEXT_PUBLIC_BASE_PATH: ''
 
       - name: Setup Pages
