@@ -487,7 +487,7 @@ export default function CubeViewer3D({
         const stepInfo = algorithmRef.current.moveSteps[targetIdx];
 
         if (voiceEnabledRef.current && stepInfo) {
-          voiceCoach.speakMove(moveStr, stepInfo.spokenText);
+          voiceCoach.speakCallout(moveStr);
         }
 
         await executeMove(moveStr);
@@ -502,7 +502,11 @@ export default function CubeViewer3D({
 
         if (targetIdx === algorithmRef.current.moves.length - 1) {
           haptics.trigger('success');
-          onAlgorithmCompleteRef.current?.();
+          setTimeout(() => {
+            if (mountedRef.current) {
+              onAlgorithmCompleteRef.current?.();
+            }
+          }, 450);
         }
         return true;
       } catch (err) {
@@ -545,7 +549,7 @@ export default function CubeViewer3D({
         break;
       }
 
-      const pauseMs = Math.max(160, 480 / playSpeedRef.current);
+      const pauseMs = Math.max(360, Math.round(680 / playSpeedRef.current));
       await new Promise((resolve) => setTimeout(resolve, pauseMs));
     }
   }, [executeStepAtIndex]);

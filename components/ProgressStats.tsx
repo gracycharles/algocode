@@ -17,13 +17,24 @@ interface ProgressStatsProps {
 }
 
 export default function ProgressStats({ onSelectAlgorithm }: ProgressStatsProps) {
-  const [stats3x3, setStats3x3] = useState(() => progressStore.getCubeStats('3x3'));
-  const [stats4x4, setStats4x4] = useState(() => progressStore.getCubeStats('4x4'));
-  const [stats5x5, setStats5x5] = useState(() => progressStore.getCubeStats('5x5'));
-  const [userStats, setUserStats] = useState<UserStats>(() => progressStore.getStats());
+  const [stats3x3, setStats3x3] = useState({ total: 10, mastered: 0, learning: 0, notStarted: 10, percentage: 0 });
+  const [stats4x4, setStats4x4] = useState({ total: 5, mastered: 0, learning: 0, notStarted: 5, percentage: 0 });
+  const [stats5x5, setStats5x5] = useState({ total: 5, mastered: 0, learning: 0, notStarted: 5, percentage: 0 });
+  const [userStats, setUserStats] = useState<UserStats>({
+    totalMovesExecuted: 0,
+    totalPracticeTimeSeconds: 0,
+    algorithmsMasteredCount: 0,
+    streakDays: 1,
+    lastActiveDate: '',
+  });
   const [filterType, setFilterType] = useState<'all' | '3x3' | '4x4' | '5x5'>('all');
 
   useEffect(() => {
+    setStats3x3(progressStore.getCubeStats('3x3'));
+    setStats4x4(progressStore.getCubeStats('4x4'));
+    setStats5x5(progressStore.getCubeStats('5x5'));
+    setUserStats(progressStore.getStats());
+
     const unsub = progressStore.subscribe(() => {
       setStats3x3(progressStore.getCubeStats('3x3'));
       setStats4x4(progressStore.getCubeStats('4x4'));

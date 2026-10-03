@@ -21,7 +21,7 @@ export default function MoveBreakdown({
     currentStepIndex >= 0 ? algorithm.moveSteps[currentStepIndex] : undefined;
 
   const playStepAudio = (step: MoveStep) => {
-    voiceCoach.speakMove(step.move, step.spokenText);
+    voiceCoach.speakMove(step.move, step.instruction);
     haptics.trigger('turn');
   };
 

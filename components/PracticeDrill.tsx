@@ -24,8 +24,8 @@ interface PracticeDrillProps {
 export default function PracticeDrill({ algorithm, onStatusChange }: PracticeDrillProps) {
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [timeMs, setTimeMs] = useState<number>(0);
-  const [bestTime, setBestTime] = useState<number | undefined>(() => progressStore.getProgress(algorithm.id).bestTimeSeconds);
-  const [status, setStatus] = useState<AlgorithmStatus>(() => progressStore.getProgress(algorithm.id).status);
+  const [bestTime, setBestTime] = useState<number | undefined>(undefined);
+  const [status, setStatus] = useState<AlgorithmStatus>('not_started');
   const [showMoves, setShowMoves] = useState<boolean>(true);
   const [drillSuccess, setDrillSuccess] = useState<boolean>(false);
 
@@ -33,10 +33,14 @@ export default function PracticeDrill({ algorithm, onStatusChange }: PracticeDri
   const startTimeRef = useRef<number>(0);
 
   useEffect(() => {
+    const prog = progressStore.getProgress(algorithm.id);
+    setStatus(prog.status);
+    setBestTime(prog.bestTimeSeconds);
+
     const unsub = progressStore.subscribe(() => {
-      const prog = progressStore.getProgress(algorithm.id);
-      setStatus(prog.status);
-      setBestTime(prog.bestTimeSeconds);
+      const updated = progressStore.getProgress(algorithm.id);
+      setStatus(updated.status);
+      setBestTime(updated.bestTimeSeconds);
     });
     return () => unsub();
   }, [algorithm.id]);
