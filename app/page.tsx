@@ -18,6 +18,7 @@ import MoveBreakdown from '@/components/MoveBreakdown';
 import PracticeDrill from '@/components/PracticeDrill';
 import NotationReference from '@/components/NotationReference';
 import ProgressStats from '@/components/ProgressStats';
+import ReductionGuide from '@/components/ReductionGuide';
 
 import {
   ChevronRight,
@@ -29,7 +30,9 @@ import {
   Award,
   Search,
   X,
+  HelpCircle,
   Sparkles,
+  BookMarked,
 } from 'lucide-react';
 
 export default function HomePage() {
@@ -39,6 +42,7 @@ export default function HomePage() {
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(-1);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [showGuide, setShowGuide] = useState<boolean>(false);
   const [isMounted, setIsMounted] = useState<boolean>(false);
   const [, setProgressTick] = useState<number>(0);
 
@@ -143,6 +147,16 @@ export default function HomePage() {
                 <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-slate-900 border border-slate-700 text-slate-200">
                   {displayedAlgorithms.length} Algorithms
                 </span>
+
+                {(selectedCubeType === '4x4' || selectedCubeType === '5x5') && (
+                  <button
+                    onClick={() => setShowGuide(!showGuide)}
+                    className="ml-2 px-3 py-1 rounded-lg bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-md transition-all"
+                  >
+                    <BookMarked className="w-3.5 h-3.5" />
+                    <span>How to Solve a Scrambled {selectedCubeType}</span>
+                  </button>
+                )}
               </div>
 
               {/* Instant Search Bar */}
@@ -192,6 +206,15 @@ export default function HomePage() {
               })}
             </div>
           </div>
+        )}
+
+        {/* Reduction Guide Modal / Section if Toggled */}
+        {showGuide && (selectedCubeType === '4x4' || selectedCubeType === '5x5') && (
+          <ReductionGuide
+            cubeType={selectedCubeType}
+            onSelectAlgorithm={handleSelectAlgorithm}
+            onClose={() => setShowGuide(false)}
+          />
         )}
 
         {/* Algorithm Teaching Workspace (for 3x3, 4x4, and 5x5) */}
