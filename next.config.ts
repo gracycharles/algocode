@@ -1,6 +1,7 @@
 import type {NextConfig} from 'next';
 
 const isGitHubPages = process.env.GITHUB_PAGES === 'true';
+const basePath = (process.env.NEXT_PUBLIC_BASE_PATH || '').trim();
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -24,7 +25,8 @@ const nextConfig: NextConfig = {
   ...(isGitHubPages
     ? {
         output: 'export',
-        basePath: process.env.NEXT_PUBLIC_BASE_PATH || undefined,
+        basePath: basePath.length > 0 ? basePath : undefined,
+        assetPrefix: basePath.length > 0 ? basePath : undefined,
       }
     : {
         output: 'standalone',
